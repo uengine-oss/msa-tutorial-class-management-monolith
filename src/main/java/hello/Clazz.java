@@ -94,11 +94,11 @@ public class Clazz implements BeforeSave{
     @Override
     public void beforeSave() {
 
-        checkAvailabilityForInstructor();
+        checkAvailabilityAndSetInstructor();
 
     }
 
-    private void checkAvailabilityForInstructor() {
+    private void checkAvailabilityAndSetInstructor() {
         if(getInstructor()!=null){
             SharedCalendarService sharedCalendarService = Application.applicationContext.getBean(SharedCalendarService.class);
 
@@ -110,10 +110,18 @@ public class Clazz implements BeforeSave{
                 List<ClazzDay> schedules = sharedCalendarService.getSchedules(clazzDay.getDate(), getInstructor());
 
                 if(schedules!=null && schedules.size() > 0){
-                    throw new RuntimeException("Instructor " + getInstructor() + " already have another class for that time slot.");
+                    throw new RuntimeException("Instructor " + getInstructor().getFirstName() + " already have another class for that time slot.");
                 }
 
             }
+
+            //set instructor if available time slot
+            for(ClazzDay clazzDay : getClazzDays()){
+
+                clazzDay.setInstructor(getInstructor());
+
+            }
+
         }
     }
 }

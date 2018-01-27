@@ -44,12 +44,14 @@ public class Application extends Metaworks4BaseApplication {
 
     private static Log logger = LogFactory.getLog(Application.class);
 
+    protected static ApplicationContext applicationContext;
+
     protected Application(DataSource dataSource, JpaProperties properties, ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider, ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
         super(dataSource, properties, jtaTransactionManagerProvider, transactionManagerCustomizers);
     }
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
+        applicationContext = SpringApplication.run(Application.class, args);
     }
 
     @Bean

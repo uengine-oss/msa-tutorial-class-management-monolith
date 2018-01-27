@@ -1,5 +1,8 @@
 package hello;
 
+import org.metaworks.multitenancy.persistence.AfterLoad;
+import org.metaworks.multitenancy.persistence.AfterLoadOne;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,7 +15,7 @@ import java.util.List;
  http "http://localhost:8080/courses/1/clazzes"
  */
 @Entity
-public class Course {
+public class Course implements AfterLoad {
 
     @Id
     @GeneratedValue
@@ -26,6 +29,17 @@ public class Course {
 
     @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "course")
     List<Clazz> clazzes;
+
+    @Transient
+    Long courseId;
+        public Long getCourseId() {
+            return courseId;
+        }
+        public void setCourseId(Long courseId) {
+            this.courseId = courseId;
+        }
+
+
 
 
     public List<Clazz> getClazzes() {
@@ -91,5 +105,10 @@ public class Course {
 
     public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    @Override
+    public void afterLoad() {
+        setCourseId(getId());
     }
 }

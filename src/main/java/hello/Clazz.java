@@ -1,6 +1,10 @@
 package hello;
 
+import org.metaworks.multitenancy.persistence.BeforeSave;
+
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by uengine on 2018. 1. 6..
@@ -14,7 +18,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-public class Clazz {
+public class Clazz implements BeforeSave{
 
     @Id
     @GeneratedValue
@@ -29,6 +33,18 @@ public class Clazz {
     @ManyToOne
     @JoinColumn(name="iid")
     Instructor instructor;
+
+    @OneToMany(mappedBy = "clazz")
+    //@JoinColumn(name="cid")
+    List<ClazzDay> clazzDays;
+        public List<ClazzDay> getClazzDays() {
+            return clazzDays;
+        }
+        public void setClazzDays(List<ClazzDay> clazzDays) {
+            this.clazzDays = clazzDays;
+        }
+
+
 
 //    @ManyToOne
 //    @JoinColumn(name="pre_cid")
@@ -75,4 +91,29 @@ public class Clazz {
     }
 
 
+    @Override
+    public void beforeSave() {
+
+        checkAvailabilityForInstructor();
+
+    }
+
+    private void checkAvailabilityForInstructor() {
+        if(getInstructor()!=null){
+            SharedCalendarService sharedCalendarService = Application.applicationContext.getBean(SharedCalendarService.class);
+
+            if(getClazzDays()==null)
+                throw new RuntimeException("Instructor can be mapped after adding class days for this class.");
+
+            for(ClazzDay clazzDay : getClazzDays()){
+
+                List<ClazzDay> schedules = sharedCalendarService.getSchedules(clazzDay.getDate(), getInstructor());
+
+                if(schedules!=null && schedules.size() > 0){
+                    throw new RuntimeException("Instructor " + getInstructor() + " already have another class for that time slot.");
+                }
+
+            }
+        }
+    }
 }

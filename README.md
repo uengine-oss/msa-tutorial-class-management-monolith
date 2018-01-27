@@ -1,1 +1,1 @@
-# software-modeling-class-management
+스프링부트 샘플

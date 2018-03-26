@@ -91,7 +91,7 @@ public class Clazz implements BeforeSave{
     }
 
 
-    @Override
+    @PrePersist
     public void beforeSave() {
 
         checkAvailabilityAndSetInstructor();

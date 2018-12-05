@@ -26,8 +26,10 @@
 
 # HTTPie 가 없는 경우
 
+> pip install httpie
+
 - 맥
 
 > brew install httpie
 
-- 설치 방법: https://github.com/TheOpenCloudEngine/uEngine-cloud/wiki/Httpie-%EC%84%A4%EC%B9%98
+- 윈도우에 설치 방법: https://github.com/TheOpenCloudEngine/uEngine-cloud/wiki/Httpie-%EC%84%A4%EC%B9%98
